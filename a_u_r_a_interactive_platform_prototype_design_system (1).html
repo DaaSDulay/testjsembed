@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A.U.R.A. - AI Unified Recruitment Assistant</title>
+  
+  <!-- Inter Font for Apple-like clean aesthetic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js for Analytics & Radar Charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            aura: {
+              bg: '#FAFAFC', // Slightly cooler off-white for Apple-like minimal background
+              surface: '#FFFFFF',
+              surfaceHover: '#F5F5F7',
+              text: '#1D1D1F', // Deep gray/black (Apple-style)
+              charade: '#232220',
+              oracle: '#504F4A',
+              slate: '#86868B', // Softer slate
+              iron: '#CECDCA',
+              smoke: '#E5E5EA', // Apple-like light gray border
+              ash: '#F3F3F3',
+              brand: '#FF612B',
+              brandDark: '#E04B16',
+              brandPersimmon: '#F0531C',
+              brandBrick: '#C23B0C',
+              dawn: '#FFD1AB',
+              sunset: '#F9A667',
+              sky: '#D9F6FA',
+              horizon: '#EDE8E0',
+              successDark: '#1E7E34',
+              successLight: '#E6F4EA',
+              warnDark: '#B76E00',
+              warnLight: '#FEF7E0',
+              infoDark: '#0277BD',
+              infoLight: '#DFF3F9',
+              dangerDark: '#D32F2F',
+              dangerLight: '#FCE8E6'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif']
+          },
+          boxShadow: {
+            'apple': '0 4px 24px rgba(0, 0, 0, 0.04)',
+            'apple-hover': '0 8px 32px rgba(0, 0, 0, 0.08)',
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    body {
+      background-color: #FAFAFC;
+      color: #1D1D1F;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #CECDCA;
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #86868B;
+    }
+    /* Smooth Apple-like transitions */
+    * {
+      transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 200ms;
+    }
+    /* Minimalist border utility for components */
+    .glass-border {
+      border: 1px solid rgba(229, 229, 234, 0.8);
+    }
+  </style>
+</head>
+<body class="bg-aura-bg text-aura-text min-h-screen flex flex-col antialiased selection:bg-aura-dawn selection:text-aura-brandDark">
+
+  <!-- TOP GLOBAL NAV BAR (Translucent Apple-style) -->
+  <header class="bg-white/80 backdrop-blur-md border-b glass-border sticky top-0 z-50">
+    <!-- Widened to max-w-screen-2xl for 1920x1080 optimization -->
+    <div class="max-w-screen-2xl mx-auto px-6 lg:px-10">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- BRAND LOGO -->
+        <div class="flex items-center gap-4">
+          <div class="w-9 h-9 rounded-full bg-aura-brand flex items-center justify-center text-white font-bold text-lg shadow-sm">
+            A
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-lg tracking-tight text-aura-text">A.U.R.A.</span>
+              <span class="text-[10px] px-2.5 py-0.5 rounded-full bg-aura-dawn/50 text-aura-brandDark font-semibold">Enterprise</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAIN NAVIGATION TABS (Pill shaped buttons for 9999px constraint compliance) -->
+        <nav class="hidden md:flex items-center space-x-1 bg-aura-bg p-1 rounded-full glass-border">
+          <button onclick="switchTab('dashboard')" id="nav-dashboard" class="px-4 py-1.5 text-xs font-semibold rounded-full transition-all text-aura-text bg-white shadow-sm">
+            Dashboard
+          </button>
+          <button onclick="switchTab('candidate-result')" id="nav-candidate-result" class="px-4 py-1.5 text-xs font-semibold rounded-full transition-all text-aura-slate hover:text-aura-text hover:bg-white/50">
+            Intelligence Profile
+          </button>
+          <button onclick="switchTab('candidate-assessment')" id="nav-candidate-assessment" class="px-4 py-1.5 text-xs font-semibold rounded-full transition-all text-aura-slate hover:text-aura-text hover:bg-white/50">
+            Simulator
+          </button>
+          <button onclick="switchTab('analytics')" id="nav-analytics" class="px-4 py-1.5 text-xs font-semibold rounded-full transition-all text-aura-slate hover:text-aura-text hover:bg-white/50">
+            Analytics
+          </button>
+          <button onclick="switchTab('design-system')" id="nav-design-system" class="px-4 py-1.5 text-xs font-semibold rounded-full transition-all text-aura-slate hover:text-aura-text hover:bg-white/50">
+            Components
+          </button>
+        </nav>
+
+        <!-- USER & ACTIONS -->
+        <div class="flex items-center gap-3">
+           <button class="w-9 h-9 rounded-full bg-aura-bg hover:bg-aura-smoke flex items-center justify-center text-aura-slate transition-colors">
+              <i data-lucide="bell" class="w-4 h-4"></i>
+           </button>
+           <div class="w-9 h-9 rounded-full bg-aura-sky flex items-center justify-center text-aura-infoDark font-bold text-sm glass-border cursor-pointer">
+              SJ
+           </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main id="viewport-container" class="flex-1 max-w-screen-2xl w-full mx-auto p-6 lg:p-10 transition-all duration-300">
+
+    <!-- ==================== TAB 1: RECRUITER DASHBOARD ==================== -->
+    <section id="tab-dashboard" class="tab-content space-y-8">
+      
+      <!-- DASHBOARD HEADER -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-3xl font-bold text-aura-text tracking-tight">Overview</h1>
+          <p class="text-sm text-aura-slate mt-1">Real-time candidate readiness and scheduled activities.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <!-- All buttons updated to rounded-full (9999px) -->
+          <button class="px-5 py-2.5 text-sm font-medium bg-white glass-border hover:bg-aura-surfaceHover rounded-full flex items-center gap-2 shadow-sm transition-all">
+            <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+            Healthcare Ops
+          </button>
+          <button class="px-5 py-2.5 text-sm font-semibold bg-aura-text hover:bg-black text-white rounded-full flex items-center gap-2 shadow-sm transition-all">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            Invite Candidates
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-white glass-border rounded-3xl p-8 shadow-apple grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- LEFT WING: Compact Calendar Widget (1/3 width) -->
+        <div class="lg:col-span-1 flex flex-col h-full lg:border-r lg:border-aura-smoke lg:pr-8">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-base font-bold text-aura-text">Calendar</h2>
+            <div class="flex items-center gap-2 bg-aura-bg p-1 rounded-full glass-border">
+              <button class="w-6 h-6 rounded-full flex items-center justify-center hover:bg-white text-aura-slate transition-colors shadow-sm"><i data-lucide="chevron-left" class="w-3 h-3"></i></button>
+              <span class="text-xs font-semibold text-aura-text px-1">Jul 2026</span>
+              <button class="w-6 h-6 rounded-full flex items-center justify-center hover:bg-white text-aura-slate transition-colors shadow-sm"><i data-lucide="chevron-right" class="w-3 h-3"></i></button>
+            </div>
+          </div>
+          
+          <!-- Compact Calendar Grid Container -->
+          <div class="flex-1">
+            <!-- Day Headers -->
+            <div class="grid grid-cols-7 gap-1 text-center text-[10px] mb-3 font-semibold text-aura-slate uppercase tracking-wider">
+              <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
+            </div>
+            
+            <!-- Dates Grid (July 2026) - Scaled down -->
+            <div class="grid grid-cols-7 gap-y-4 gap-x-1 text-center text-xs">
+              <!-- Previous Month -->
+              <div class="relative py-1 text-aura-slate/30 font-medium">28</div>
+              <div class="relative py-1 text-aura-slate/30 font-medium">29</div>
+              <div class="relative py-1 text-aura-slate/30 font-medium">30</div>
+              
+              <!-- Current Month -->
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">1</div>
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">2</div>
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">
+                3
+                <div class="flex justify-center gap-0.5 mt-0.5 absolute -bottom-1 left-0 w-full"><div class="w-1 h-1 rounded-full bg-aura-infoDark"></div></div>
+              </div>
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">4</div>
+              
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">5</div>
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">6</div>
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">
+                7
+                <div class="flex justify-center gap-0.5 mt-0.5 absolute -bottom-1 left-0 w-full">
+                  <div class="w-1 h-1 rounded-full bg-aura-successDark"></div>
+                  <div class="w-1 h-1 rounded-full bg-aura-brand"></div>
+                </div>
+              </div>
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">8</div>
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">9</div>
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">10</div>
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">11</div>
+              
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">
+                12
+                <div class="flex justify-center gap-0.5 mt-0.5 absolute -bottom-1 left-0 w-full"><div class="w-1 h-1 rounded-full bg-aura-brand"></div></div>
+              </div>
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">13</div>
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">14</div>
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">15</div>
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">16</div>
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">17</div>
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">18</div>
+
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">19</div>
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">20</div>
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">21</div>
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">
+                22
+                <div class="flex justify-center gap-0.5 mt-0.5 absolute -bottom-1 left-0 w-full">
+                  <div class="w-1 h-1 rounded-full bg-aura-infoDark"></div>
+                </div>
+              </div>
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">23</div>
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">24</div>
+              
+              <!-- TODAY -->
+              <div class="relative cursor-pointer group">
+                <div class="w-7 h-7 rounded-full bg-aura-text text-white font-bold flex items-center justify-center mx-auto shadow-sm ring-2 ring-aura-smoke">25</div>
+                <div class="flex justify-center gap-0.5 mt-1 absolute -bottom-1.5 left-0 w-full">
+                  <div class="w-1 h-1 rounded-full bg-aura-brand"></div>
+                  <div class="w-1 h-1 rounded-full bg-aura-infoDark"></div>
+                  <div class="w-1 h-1 rounded-full bg-aura-successDark"></div>
+                </div>
+              </div>
+
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">
+                26
+                <div class="flex justify-center gap-0.5 mt-0.5 absolute -bottom-1 left-0 w-full"><div class="w-1 h-1 rounded-full bg-aura-warnDark"></div></div>
+              </div>
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">27</div>
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">28</div>
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">29</div>
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">30</div>
+              <div class="relative py-1 text-aura-text font-medium cursor-pointer hover:bg-aura-smoke rounded-xl transition-colors">31</div>
+              <!-- Next Month -->
+              <div class="relative py-1 text-aura-slate/30 font-medium">1</div>
+            </div>
+            
+            <div class="mt-6 flex flex-col gap-2 text-[10px] text-aura-slate font-medium">
+              <span class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-aura-brand"></div> Final Interview</span>
+              <span class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-aura-infoDark"></div> Panel Review</span>
+              <span class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-aura-warnDark"></div> Assessment Deadline</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT WING: Expanded Agenda & Nearest Process (2/3 width) -->
+        <div class="lg:col-span-2 flex flex-col">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h2 class="text-lg font-bold text-aura-text">Upcoming Schedule</h2>
+              <p class="text-xs text-aura-slate mt-1">Shortlisted candidate interviews and assessments.</p>
+            </div>
+            <button class="px-4 py-2 text-xs font-semibold bg-aura-bg hover:bg-aura-smoke text-aura-text rounded-full transition-all flex items-center gap-2 glass-border">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Slot
+            </button>
+          </div>
+          
+          <div class="flex-1 space-y-6">
+            <!-- Agenda Date Group: Today -->
+            <div>
+              <div class="flex items-center gap-3 mb-3 border-b border-aura-smoke pb-2">
+                <span class="text-sm font-bold text-aura-text uppercase tracking-wider">Today</span>
+                <span class="text-xs text-aura-slate">Jul 25</span>
+              </div>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                
+                <!-- Card 1: Next Up / Highlighted -->
+                <div class="p-3 rounded-2xl bg-aura-dawn/20 border border-aura-brand/20 relative overflow-hidden group cursor-pointer hover:shadow-sm transition-all flex gap-4 items-center">
+                  <div class="absolute left-0 top-0 bottom-0 w-1 bg-aura-brand"></div>
+                  
+                  <div class="flex-shrink-0 text-center w-14 border-r border-aura-brand/10 pr-3">
+                     <div class="text-sm font-bold text-aura-brandDark leading-none mb-1">1:00</div>
+                     <div class="text-[10px] font-semibold text-aura-brandDark/70 uppercase">PM</div>
+                  </div>
+                  
+                  <div class="flex-1 min-w-0">
+                    <div class="flex justify-between items-start mb-1">
+                      <p class="text-sm font-bold text-aura-text truncate">Elena Rostova</p>
+                      <span class="text-[9px] px-2 py-0.5 rounded-full bg-aura-brand text-white font-medium whitespace-nowrap">Final Int.</span>
+                    </div>
+                    <p class="text-xs text-aura-slate truncate">Healthcare Ops</p>
+                  </div>
+                  
+                  <div class="flex-shrink-0 w-8 h-8 rounded-full bg-white flex items-center justify-center text-aura-brand shadow-sm">
+                    <i data-lucide="video" class="w-4 h-4"></i>
+                  </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="p-3 rounded-2xl bg-white border border-aura-smoke relative group cursor-pointer hover:border-aura-slate/30 transition-all flex gap-4 items-center shadow-sm hover:shadow-md">
+                  <div class="flex-shrink-0 text-center w-14 border-r border-aura-smoke pr-3">
+                     <div class="text-sm font-bold text-aura-text leading-none mb-1">2:30</div>
+                     <div class="text-[10px] font-semibold text-aura-slate uppercase">PM</div>
+                  </div>
+                  
+                  <div class="flex-1 min-w-0">
+                    <div class="flex justify-between items-start mb-1">
+                      <p class="text-sm font-bold text-aura-text truncate">David Kim</p>
+                      <span class="text-[9px] px-2 py-0.5 rounded-full bg-aura-smoke text-aura-text font-medium whitespace-nowrap">Tech Review</span>
+                    </div>
+                    <p class="text-xs text-aura-slate truncate">System Admin</p>
+                  </div>
+                  
+                  <div class="flex-shrink-0 w-8 h-8 rounded-full bg-aura-bg flex items-center justify-center text-aura-slate">
+                    <i data-lucide="users" class="w-4 h-4"></i>
+                  </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="p-3 rounded-2xl bg-white border border-aura-smoke relative group cursor-pointer hover:border-aura-slate/30 transition-all flex gap-4 items-center shadow-sm hover:shadow-md">
+                  <div class="flex-shrink-0 text-center w-14 border-r border-aura-smoke pr-3">
+                     <div class="text-sm font-bold text-aura-text leading-none mb-1">4:00</div>
+                     <div class="text-[10px] font-semibold text-aura-slate uppercase">PM</div>
+                  </div>
+                  
+                  <div class="flex-1 min-w-0">
+                    <div class="flex justify-between items-start mb-1">
+                      <p class="text-sm font-bold text-aura-text truncate">Mark A. Cruz</p>
+                      <span class="text-[9px] px-2 py-0.5 rounded-full bg-aura-smoke text-aura-text font-medium whitespace-nowrap">Panel A</span>
+                    </div>
+                    <p class="text-xs text-aura-slate truncate">Customer Support</p>
+                  </div>
+                  
+                  <div class="flex-shrink-0 w-8 h-8 rounded-full bg-aura-bg flex items-center justify-center text-aura-slate">
+                    <i data-lucide="users" class="w-4 h-4"></i>
+                  </div>
+                </div>
+                
+                 <!-- Card 4 -->
+                <div class="p-3 rounded-2xl bg-white border border-aura-smoke relative group cursor-pointer hover:border-aura-slate/30 transition-all flex gap-4 items-center shadow-sm hover:shadow-md opacity-60 hover:opacity-100">
+                  <div class="flex-shrink-0 text-center w-14 border-r border-aura-smoke pr-3">
+                     <div class="text-sm font-bold text-aura-text leading-none mb-1">5:15</div>
+                     <div class="text-[10px] font-semibold text-aura-slate uppercase">PM</div>
+                  </div>
+                  
+                  <div class="flex-1 min-w-0">
+                    <div class="flex justify-between items-start mb-1">
+                      <p class="text-sm font-bold text-aura-text truncate">Open Slot</p>
+                      <span class="text-[9px] px-2 py-0.5 rounded-full bg-aura-bg border border-aura-smoke text-aura-slate font-medium whitespace-nowrap">Available</span>
+                    </div>
+                    <p class="text-xs text-aura-slate truncate">30 min block</p>
+                  </div>
+                   <div class="flex-shrink-0 w-8 h-8 rounded-full border border-dashed border-aura-slate/50 flex items-center justify-center text-aura-slate/50">
+                    <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Agenda Date Group: Tomorrow -->
+            <div>
+               <div class="flex items-center gap-3 mb-3 border-b border-aura-smoke pb-2 mt-4">
+                <span class="text-sm font-bold text-aura-slate uppercase tracking-wider">Tomorrow</span>
+                <span class="text-xs text-aura-slate/60">Jul 26</span>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                
+                <!-- Card 5 -->
+                <div class="p-3 rounded-2xl bg-aura-bg border border-transparent hover:border-aura-smoke cursor-pointer transition-colors flex gap-4 items-center">
+                   <div class="flex-shrink-0 text-center w-14 border-r border-aura-smoke/50 pr-3">
+                     <div class="text-sm font-bold text-aura-text leading-none mb-1">9:30</div>
+                     <div class="text-[10px] font-semibold text-aura-slate uppercase">AM</div>
+                  </div>
+                  
+                  <div class="flex-1 min-w-0">
+                    <div class="flex justify-between items-start mb-1">
+                      <p class="text-sm font-bold text-aura-text truncate">Sophia Lim</p>
+                      <span class="text-[9px] px-2 py-0.5 rounded-full bg-aura-warnLight text-aura-warnDark font-medium whitespace-nowrap">Deadline</span>
+                    </div>
+                    <p class="text-xs text-aura-slate truncate">Written Task</p>
+                  </div>
+                </div>
+                
+                <!-- Card 6 -->
+                <div class="p-3 rounded-2xl bg-aura-bg border border-transparent hover:border-aura-smoke cursor-pointer transition-colors flex gap-4 items-center">
+                   <div class="flex-shrink-0 text-center w-14 border-r border-aura-smoke/50 pr-3">
+                     <div class="text-sm font-bold text-aura-text leading-none mb-1">11:00</div>
+                     <div class="text-[10px] font-semibold text-aura-slate uppercase">AM</div>
+                  </div>
+                  
+                  <div class="flex-1 min-w-0">
+                    <div class="flex justify-between items-start mb-1">
+                      <p class="text-sm font-bold text-aura-text truncate">Sarah Jenkins</p>
+                      <span class="text-[9px] px-2 py-0.5 rounded-full bg-aura-smoke text-aura-text font-medium whitespace-nowrap">Initial Sync</span>
+                    </div>
+                    <p class="text-xs text-aura-slate truncate">Marketing Assoc.</p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- SIDE BLOCK: KPI Cards (1/3 width, stacked in 2x2 grid) -->
+        <div class="lg:col-span-1 grid grid-cols-2 gap-4">
+          
+          <div class="bg-white glass-border p-6 rounded-3xl shadow-apple hover:shadow-apple-hover transition-shadow flex flex-col justify-center">
+            <div class="flex items-center justify-between mb-3">
+              <p class="text-xs font-semibold text-aura-slate uppercase tracking-wider">Total Pool</p>
+              <i data-lucide="users" class="w-4 h-4 text-aura-slate"></i>
+            </div>
+            <p class="text-3xl font-extrabold text-aura-text">1,284</p>
+            <span class="text-[10px] text-aura-successDark font-bold flex items-center gap-1 mt-2 bg-aura-successLight/60 w-fit px-2 py-0.5 rounded-full">
+              <i data-lucide="trending-up" class="w-3 h-3"></i> +12%
+            </span>
+          </div>
+          
+          <div class="bg-white glass-border p-6 rounded-3xl shadow-apple hover:shadow-apple-hover transition-shadow flex flex-col justify-center">
+            <div class="flex items-center justify-between mb-3">
+              <p class="text-xs font-semibold text-aura-slate uppercase tracking-wider">Avg Score</p>
+              <i data-lucide="activity" class="w-4 h-4 text-aura-slate"></i>
+            </div>
+            <p class="text-3xl font-extrabold text-aura-text">81.4</p>
+            <span class="text-[10px] text-aura-infoDark font-bold mt-2 block bg-aura-infoLight/60 w-fit px-2 py-0.5 rounded-full">
+              CEFR B2+
+            </span>
+          </div>
+
+          <div class="bg-white glass-border p-6 rounded-3xl shadow-apple hover:shadow-apple-hover transition-shadow flex flex-col justify-center">
+            <div class="flex items-center justify-between mb-3">
+              <p class="text-xs font-semibold text-aura-slate uppercase tracking-wider">Completed</p>
+              <i data-lucide="check-circle" class="w-4 h-4 text-aura-slate"></i>
+            </div>
+            <p class="text-3xl font-extrabold text-aura-text">1,142</p>
+            <span class="text-[10px] text-aura-slate font-bold mt-2 block bg-aura-smoke/50 w-fit px-2 py-0.5 rounded-full">
+              88.9% Rate
+            </span>
+          </div>
+
+          <div class="bg-aura-brandDark border-none p-6 rounded-3xl shadow-apple hover:shadow-apple-hover transition-shadow text-white relative overflow-hidden flex flex-col justify-center">
+            <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
+            <div class="flex items-center justify-between relative z-10 mb-3">
+              <p class="text-xs font-semibold text-white/80 uppercase tracking-wider">Recommended</p>
+              <i data-lucide="star" class="w-4 h-4 text-white/80"></i>
+            </div>
+            <p class="text-3xl font-extrabold relative z-10">684</p>
+            <span class="text-[10px] text-aura-brandDark bg-white/90 font-bold mt-2 block relative z-10 w-fit px-2 py-0.5 rounded-full">
+              Top 59.8%
+            </span>
+          </div>
+
+        </div>
+
+        <!-- RIGHT BLOCK: Pipeline Conversion Funnel (2/3 width) -->
+        <div class="lg:col-span-2 bg-white glass-border rounded-3xl p-8 shadow-apple flex flex-col justify-center">
+          <div class="flex items-center justify-between mb-8">
+            <h2 class="text-base font-semibold text-aura-text">Candidate Pipeline Conversion</h2>
+            <button class="px-4 py-2 text-xs font-semibold bg-aura-bg hover:bg-aura-smoke text-aura-slate rounded-full transition-all">
+              Export Report
+            </button>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
+            <div class="bg-aura-bg p-5 rounded-2xl hover:bg-aura-smoke transition-colors">
+              <div class="text-[11px] font-semibold text-aura-slate uppercase tracking-wide mb-1.5">Applicants</div>
+              <div class="text-2xl font-bold text-aura-text">1,284</div>
+              <div class="w-full bg-aura-smoke h-1.5 rounded-full mt-4 overflow-hidden">
+                <div class="bg-aura-slate h-full w-full"></div>
+              </div>
+            </div>
+            <div class="bg-aura-bg p-5 rounded-2xl hover:bg-aura-smoke transition-colors">
+              <div class="text-[11px] font-semibold text-aura-slate uppercase tracking-wide mb-1.5">Started</div>
+              <div class="text-2xl font-bold text-aura-text">1,210</div>
+              <div class="w-full bg-aura-smoke h-1.5 rounded-full mt-4 overflow-hidden">
+                <div class="bg-aura-infoDark h-full w-[94%]"></div>
+              </div>
+            </div>
+            <div class="bg-aura-bg p-5 rounded-2xl hover:bg-aura-smoke transition-colors">
+              <div class="text-[11px] font-semibold text-aura-slate uppercase tracking-wide mb-1.5">Completed</div>
+              <div class="text-2xl font-bold text-aura-text">1,142</div>
+              <div class="w-full bg-aura-smoke h-1.5 rounded-full mt-4 overflow-hidden">
+                <div class="bg-aura-infoDark h-full w-[88%]"></div>
+              </div>
+            </div>
+            <div class="bg-aura-dawn/20 p-5 rounded-2xl border border-aura-brand/10 relative hover:bg-aura-dawn/30 transition-colors shadow-sm">
+              <div class="absolute top-0 right-6 w-8 h-1.5 bg-aura-brand rounded-b-full"></div>
+              <div class="text-[11px] font-bold text-aura-brandDark uppercase tracking-wide mb-1.5">Recommended</div>
+              <div class="text-2xl font-bold text-aura-brandDark">684</div>
+              <div class="w-full bg-aura-smoke h-1.5 rounded-full mt-4 overflow-hidden">
+                <div class="bg-aura-brand h-full w-[59%]"></div>
+              </div>
+            </div>
+            <div class="bg-aura-bg p-5 rounded-2xl hover:bg-aura-smoke transition-colors">
+              <div class="text-[11px] font-semibold text-aura-slate uppercase tracking-wide mb-1.5">Interviewed</div>
+              <div class="text-2xl font-bold text-aura-text">412</div>
+              <div class="w-full bg-aura-smoke h-1.5 rounded-full mt-4 overflow-hidden">
+                <div class="bg-aura-successDark h-full w-[36%]"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CANDIDATE MANAGEMENT DATA TABLE (SORTED) -->
+      <div class="bg-white glass-border rounded-3xl shadow-apple overflow-hidden">
+        <div class="p-6 border-b glass-border flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <h2 class="text-base font-semibold text-aura-text">Candidate Pipeline</h2>
+            <p class="text-xs text-aura-slate mt-1">Prioritized by advancement stage and readiness signals.</p>
+          </div>
+          <div class="flex items-center gap-3 w-full sm:w-auto">
+            <div class="relative w-full sm:w-64">
+              <i data-lucide="search" class="w-4 h-4 absolute left-4 top-1/2 transform -translate-y-1/2 text-aura-slate"></i>
+              <input type="text" placeholder="Search candidates..." class="w-full text-sm pl-10 pr-4 py-2.5 glass-border rounded-full bg-aura-bg focus:outline-none focus:ring-2 focus:ring-aura-brand/20 focus:border-aura-brand transition-all">
+            </div>
+            <button class="px-4 py-2.5 text-sm font-medium bg-white glass-border hover:bg-aura-surfaceHover rounded-full flex items-center gap-2 transition-all">
+              <i data-lucide="filter" class="w-4 h-4"></i> Filter
+            </button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-aura-bg border-b glass-border text-aura-slate font-medium text-xs">
+                <th class="px-6 py-4 rounded-tl-2xl">Candidate</th>
+                <th class="px-6 py-4">Current Stage</th>
+                <th class="px-6 py-4">Assessment Status</th>
+                <th class="px-6 py-4">Readiness Score</th>
+                <th class="px-6 py-4">AI Signal</th>
+                <th class="px-6 py-4 text-right rounded-tr-2xl">Action</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-aura-smoke/50">
+              
+              <!-- ROW 1: Highest Priority (Farthest Stage, Top Score, Strong Signal) -->
+              <tr class="hover:bg-aura-bg cursor-pointer transition-colors" onclick="switchTab('candidate-result')">
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-aura-dawn text-aura-brandDark font-bold flex items-center justify-center text-sm">
+                      ER
+                    </div>
+                    <div>
+                      <span class="font-semibold text-aura-text block">Elena Rostova</span>
+                      <span class="text-xs text-aura-slate">Healthcare Ops</span>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="text-sm font-medium text-aura-text flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-aura-brand"></div> Final Interview
+                  </span>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-aura-successLight text-aura-successDark">
+                    <i data-lucide="check" class="w-3 h-3"></i> Completed
+                  </span>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-2">
+                    <span class="font-bold text-lg text-aura-brandDark">83</span>
+                    <span class="text-xs text-aura-slate">/100</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-aura-dawn text-aura-brandDark border border-aura-brand/20">
+                    Strong Rec
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-right">
+                  <button onclick="event.stopPropagation(); switchTab('candidate-result');" class="px-4 py-2 text-xs font-semibold bg-white hover:bg-aura-dawn/20 glass-border rounded-full text-aura-brandDark transition-all">
+                    View Profile
+                  </button>
+                </td>
+              </tr>
+
+              <!-- ROW 2: Medium Priority -->
+              <tr class="hover:bg-aura-bg cursor-pointer transition-colors">
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-aura-sky text-aura-infoDark font-bold flex items-center justify-center text-sm">
+                      MA
+                    </div>
+                    <div>
+                      <span class="font-semibold text-aura-text block">Mark Anthony Cruz</span>
+                      <span class="text-xs text-aura-slate">Customer Support</span>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="text-sm font-medium text-aura-text flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-aura-infoDark"></div> Recruiter Review
+                  </span>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-aura-successLight text-aura-successDark">
+                    <i data-lucide="check" class="w-3 h-3"></i> Completed
+                  </span>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-2">
+                    <span class="font-bold text-lg text-aura-text">78</span>
+                    <span class="text-xs text-aura-slate">/100</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-aura-infoLight text-aura-infoDark border border-aura-infoDark/20">
+                    Recommended
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-right">
+                  <button class="px-4 py-2 text-xs font-medium bg-white hover:bg-aura-smoke glass-border rounded-full text-aura-text transition-all">
+                    View Profile
+                  </button>
+                </td>
+              </tr>
+
+              <!-- ROW 3: Lowest Priority (Pending) -->
+              <tr class="hover:bg-aura-bg cursor-pointer transition-colors">
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-aura-warnLight text-aura-warnDark font-bold flex items-center justify-center text-sm">
+                      SL
+                    </div>
+                    <div>
+                      <span class="font-semibold text-aura-text block">Sophia Lim</span>
+                      <span class="text-xs text-aura-slate">Technical Helpdesk</span>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="text-sm font-medium text-aura-text flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-aura-warnDark"></div> Assessment
+                  </span>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-aura-warnLight text-aura-warnDark">
+                    <div class="w-1.5 h-1.5 rounded-full bg-aura-warnDark animate-pulse"></div> In Progress
+                  </span>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="text-xs text-aura-slate italic">Evaluating...</span>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-aura-smoke text-aura-slate">
+                    Pending
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-right">
+                  <button class="px-4 py-2 text-xs font-medium bg-white hover:bg-aura-smoke glass-border rounded-full text-aura-text transition-all">
+                    Track Progress
+                  </button>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- ==================== TAB 2: CANDIDATE RESULT & AI INTELLIGENCE VIEW ==================== -->
+    <section id="tab-candidate-result" class="tab-content hidden space-y-8">
+      
+      <!-- TOP NAVIGATION RETURN LINK -->
+      <div class="flex items-center justify-between pb-2">
+        <button onclick="switchTab('dashboard')" class="text-sm font-semibold text-aura-brandDark hover:text-aura-brand flex items-center gap-2 transition-colors">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i> Dashboard
+        </button>
+        <div class="flex items-center gap-3">
+          <!-- Buttons updated to rounded-full -->
+          <button class="px-4 py-2 text-sm font-medium bg-white glass-border hover:bg-aura-surfaceHover rounded-full flex items-center gap-2">
+            <i data-lucide="file-text" class="w-4 h-4"></i> PDF Report
+          </button>
+          <button class="px-4 py-2 text-sm font-medium bg-white glass-border hover:bg-aura-surfaceHover rounded-full flex items-center gap-2">
+            <i data-lucide="share-2" class="w-4 h-4"></i> Share
+          </button>
+        </div>
+      </div>
+
+      <!-- CANDIDATE HEADER SNAPSHOT CARD -->
+      <div class="bg-white glass-border rounded-3xl p-8 grid grid-cols-1 md:grid-cols-3 gap-8 shadow-apple">
+        
+        <!-- COLUMN 1: PHOTO & PROFILE METADATA -->
+        <div class="flex items-center gap-6">
+          <div class="w-20 h-20 rounded-full bg-aura-dawn text-aura-brandDark font-bold flex items-center justify-center text-2xl shadow-sm border-2 border-white">
+            ER
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold text-aura-text">Elena Rostova</h1>
+            <p class="text-sm font-medium text-aura-slate mt-1">Healthcare Operations Specialist</p>
+            <div class="flex items-center gap-3 text-xs text-aura-slate mt-2">
+              <span class="px-2 py-1 bg-aura-bg rounded-md">ID: #CAND-98241</span>
+              <span>Manila, PH</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLUMN 2: READINESS SCORE CARD -->
+        <div class="flex items-center justify-between bg-aura-bg p-6 rounded-2xl border border-transparent">
+          <div>
+            <span class="text-xs font-semibold text-aura-slate uppercase tracking-wider block mb-2">Readiness Index</span>
+            <div class="flex items-baseline gap-2">
+              <span class="text-4xl font-extrabold text-aura-brandDark">83</span>
+              <span class="text-sm text-aura-slate font-medium">/ 100</span>
+            </div>
+            <span class="inline-block mt-3 px-3 py-1 rounded-full text-xs font-bold bg-aura-brand text-white shadow-sm">
+              Strong Recommendation
+            </span>
+          </div>
+          <div class="w-16 h-16 rounded-full border-[6px] border-aura-brand flex items-center justify-center font-bold text-sm text-aura-text bg-white">
+            B2+
+          </div>
+        </div>
+
+        <!-- COLUMN 3: RECRUITER DECISION ACTION BOX -->
+        <div class="flex flex-col justify-between bg-aura-bg p-6 rounded-2xl border border-transparent">
+          <span class="text-xs font-semibold text-aura-slate uppercase tracking-wider block mb-3">Decision Panel</span>
+          <div class="grid grid-cols-2 gap-3 mb-3">
+            <button class="px-4 py-2.5 text-sm font-bold bg-aura-text hover:bg-black text-white rounded-full text-center transition-all shadow-sm">
+              Advance
+            </button>
+            <button class="px-4 py-2.5 text-sm font-medium bg-white hover:bg-aura-smoke text-aura-text glass-border rounded-full text-center transition-all">
+              Hold
+            </button>
+          </div>
+          <div class="flex items-center justify-between mt-auto">
+            <button class="text-xs text-aura-dangerDark hover:text-red-700 font-semibold px-2 py-1 rounded-full hover:bg-aura-dangerLight transition-colors">Reject</button>
+            <button class="text-xs text-aura-slate hover:text-aura-text flex items-center gap-1 font-medium px-2 py-1 rounded-full hover:bg-aura-smoke transition-colors">
+              <i data-lucide="message-square" class="w-3.5 h-3.5"></i> Note
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- LEFT COLUMN: COMPETENCY RADAR CHART -->
+        <div class="bg-white glass-border rounded-3xl p-8 shadow-apple space-y-6">
+          <h2 class="text-base font-semibold text-aura-text">Competency Breakdown</h2>
+          <div class="w-full h-64 flex items-center justify-center">
+            <canvas id="competencyRadarCanvas"></canvas>
+          </div>
+        </div>
+
+        <!-- CENTER COLUMN: AI INSIGHTS -->
+        <div class="bg-white glass-border rounded-3xl p-8 shadow-apple space-y-6">
+          <h2 class="text-base font-semibold text-aura-text flex items-center gap-2">
+            <i data-lucide="sparkles" class="w-5 h-5 text-aura-brand"></i> AI Insights
+          </h2>
+
+          <div class="bg-aura-bg p-5 rounded-2xl space-y-2 border-l-4 border-aura-successDark">
+            <h3 class="text-sm font-bold text-aura-text">Core Strengths</h3>
+            <ul class="text-sm text-aura-slate space-y-1.5 list-none">
+              <li>• Exceptional listening retention.</li>
+              <li>• Warm tone during conflict simulation.</li>
+              <li>• Strong reading pace (148 WPM).</li>
+            </ul>
+          </div>
+
+          <div class="bg-aura-bg p-5 rounded-2xl space-y-2 border-l-4 border-aura-brand">
+            <h3 class="text-sm font-bold text-aura-text">Recommended Probe</h3>
+            <p class="text-sm text-aura-slate italic">
+              "Tell me about a time you had to clarify complex medical coverage terms. How did you structure it?"
+            </p>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: AUDIO PLAYER & TRANSCRIPT -->
+        <div class="bg-white glass-border rounded-3xl p-8 shadow-apple flex flex-col">
+          <h2 class="text-base font-semibold text-aura-text mb-6">Voice Analysis: Task 6</h2>
+          
+          <!-- Sleek Audio Player -->
+          <div class="bg-aura-bg p-4 rounded-full flex items-center gap-4 mb-6">
+            <button id="playAudioBtn" onclick="toggleAudioPlay()" class="w-10 h-10 rounded-full bg-aura-text hover:bg-black text-white flex items-center justify-center shadow-sm shrink-0 transition-colors">
+              <i data-lucide="play" id="playIcon" class="w-4 h-4 ml-0.5"></i>
+            </button>
+            <div class="flex-1 w-full relative">
+              <div class="w-full bg-aura-smoke h-1.5 rounded-full overflow-hidden cursor-pointer">
+                <div class="bg-aura-brand h-full w-[33%]"></div>
+              </div>
+            </div>
+            <span class="text-xs font-semibold text-aura-slate shrink-0">00:28 / 01:24</span>
+          </div>
+
+          <!-- Transcript -->
+          <div class="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-4">
+             <p class="text-sm text-aura-text leading-relaxed">
+              "Hello, Mr. Williams. <span class="bg-aura-sky/50 font-medium px-1 rounded cursor-pointer hover:bg-aura-sky transition-colors">I completely understand how frustrating it is</span> to receive an unexpected claim denial for your physical therapy session. Let me personally look into your coverage records right now. <span class="bg-aura-dawn/50 font-medium px-1 rounded cursor-pointer hover:bg-aura-dawn transition-colors">I assure you we will resolve this issue step-by-step</span>..."
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ==================== TAB 3: CANDIDATE ASSESSMENT SIMULATOR ==================== -->
+    <section id="tab-candidate-assessment" class="tab-content hidden h-full flex-col justify-center py-10">
+      
+      <div class="max-w-2xl mx-auto w-full space-y-8">
+        
+        <!-- Header -->
+        <div class="text-center space-y-2">
+           <span class="px-3 py-1 rounded-full text-xs font-semibold bg-aura-bg text-aura-slate glass-border">
+             Task 4 of 8
+           </span>
+           <h2 class="text-2xl font-bold text-aura-text">Read the Scenario Aloud</h2>
+           <p class="text-sm text-aura-slate">Please read the statement clearly into your microphone.</p>
+        </div>
+
+        <!-- Passage Card -->
+        <div class="bg-white glass-border rounded-3xl p-10 shadow-apple text-center">
+          <blockquote class="text-lg font-medium text-aura-text leading-relaxed">
+            "Your confidential healthcare benefits plan includes preventative care, annual wellness checkups, and diagnostic lab evaluations at zero out-of-pocket copayment when performed by an in-network medical provider."
+          </blockquote>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex flex-col items-center justify-center space-y-6">
+          <div id="recordingStatusText" class="text-sm font-medium text-aura-slate">
+            Ready to record
+          </div>
+
+          <!-- BIG RECORD BUTTON (Pill/Circle) -->
+          <button id="micRecordBtn" onclick="toggleCandidateRecord()" class="w-24 h-24 rounded-full bg-aura-brand hover:bg-aura-brandDark text-white flex items-center justify-center shadow-lg transition-all hover:scale-105">
+            <i data-lucide="mic" id="micIcon" class="w-10 h-10"></i>
+          </button>
+
+          <div class="flex items-center gap-6 text-sm text-aura-slate">
+            <button class="px-6 py-3 rounded-full hover:bg-aura-smoke transition-colors">Previous</button>
+            <button onclick="switchTab('dashboard')" class="px-8 py-3 rounded-full bg-aura-text hover:bg-black text-white font-medium shadow-sm transition-all">Next Task</button>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ==================== TAB 4: ENTERPRISE ANALYTICS ==================== -->
+    <section id="tab-analytics" class="tab-content hidden space-y-8">
+      <div>
+        <h1 class="text-3xl font-bold text-aura-text tracking-tight">Analytics</h1>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-white glass-border rounded-3xl p-8 shadow-apple">
+          <h2 class="text-base font-semibold text-aura-text mb-6">Language Proficiency Distribution</h2>
+          <div class="h-72 flex items-center justify-center"><canvas id="cefrChartCanvas"></canvas></div>
+        </div>
+        <div class="bg-white glass-border rounded-3xl p-8 shadow-apple">
+          <h2 class="text-base font-semibold text-aura-text mb-6">Pass Rate by Location</h2>
+          <div class="h-72 flex items-center justify-center"><canvas id="locationChartCanvas"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 5: DESIGN SYSTEM ==================== -->
+    <section id="tab-design-system" class="tab-content hidden space-y-8">
+      <div>
+        <h1 class="text-3xl font-bold text-aura-text tracking-tight">Components (9999px Strict)</h1>
+        <p class="text-sm text-aura-slate mt-1">Conforming to OGA UI 2026 specs and minimal pill-button constraints.</p>
+      </div>
+
+      <div class="bg-white glass-border rounded-3xl p-8 shadow-apple space-y-6">
+        <h2 class="text-base font-semibold text-aura-text">Pill Buttons (rounded-full)</h2>
+        <div class="flex flex-wrap gap-4">
+          <button class="px-6 py-3 text-sm font-medium bg-aura-brand text-white rounded-full shadow-sm hover:opacity-90">Primary Brand</button>
+          <button class="px-6 py-3 text-sm font-medium bg-aura-text text-white rounded-full shadow-sm hover:opacity-90">Primary Dark</button>
+          <button class="px-6 py-3 text-sm font-medium bg-white glass-border text-aura-text rounded-full hover:bg-aura-smoke">Secondary Outline</button>
+          <button class="px-6 py-3 text-sm font-medium bg-aura-bg text-aura-slate rounded-full">Subtle Fill</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    // Initialize Icons
+    lucide.createIcons();
+
+    // Tab Switching Logic
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => {
+        el.classList.add('hidden');
+        el.classList.remove('flex');
+      });
+      
+      const target = document.getElementById('tab-' + tabId);
+      if (tabId === 'candidate-assessment') {
+        target.classList.remove('hidden');
+        target.classList.add('flex'); // special flex layout for simulator
+      } else {
+        target.classList.remove('hidden');
+      }
+
+      // Update Nav pill styles
+      const tabs = ['dashboard', 'candidate-result', 'candidate-assessment', 'analytics', 'design-system'];
+      tabs.forEach(t => {
+        const btn = document.getElementById('nav-' + t);
+        if (btn) {
+          if (t === tabId) {
+            btn.className = "px-4 py-1.5 text-xs font-semibold rounded-full transition-all text-aura-text bg-white shadow-sm";
+          } else {
+            btn.className = "px-4 py-1.5 text-xs font-semibold rounded-full transition-all text-aura-slate hover:text-aura-text hover:bg-white/50";
+          }
+        }
+      });
+
+      if (tabId === 'candidate-result') renderRadarChart();
+      if (tabId === 'analytics') renderAnalyticsCharts();
+    }
+
+    // Audio Simulator
+    let isPlaying = false;
+    function toggleAudioPlay() {
+      isPlaying = !isPlaying;
+      const icon = document.getElementById('playIcon');
+      const btn = document.getElementById('playAudioBtn');
+      if (isPlaying) {
+        icon.setAttribute('data-lucide', 'pause');
+        btn.classList.replace('bg-aura-text', 'bg-aura-brand');
+      } else {
+        icon.setAttribute('data-lucide', 'play');
+        btn.classList.replace('bg-aura-brand', 'bg-aura-text');
+      }
+      lucide.createIcons();
+    }
+
+    // Mic Simulator
+    let isRecording = false;
+    function toggleCandidateRecord() {
+      isRecording = !isRecording;
+      const btn = document.getElementById('micRecordBtn');
+      const status = document.getElementById('recordingStatusText');
+      if (isRecording) {
+        btn.classList.add('animate-pulse', 'bg-red-500');
+        btn.classList.remove('bg-aura-brand');
+        status.innerText = "Recording... Speak clearly.";
+        status.classList.replace('text-aura-slate', 'text-red-500');
+      } else {
+        btn.classList.remove('animate-pulse', 'bg-red-500');
+        btn.classList.add('bg-aura-brand');
+        status.innerText = "Ready to record";
+        status.classList.replace('text-red-500', 'text-aura-slate');
+      }
+    }
+
+    // Chart.js Configs (Sleeker, minimal styling)
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.color = '#86868B';
+
+    let radarChartInstance = null;
+    function renderRadarChart() {
+      const ctx = document.getElementById('competencyRadarCanvas');
+      if (!ctx) return;
+      if (radarChartInstance) radarChartInstance.destroy();
+
+      radarChartInstance = new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: ['Fluency', 'Vocabulary', 'Grammar', 'Listening', 'Empathy', 'Writing'],
+          datasets: [{
+            data: [88, 82, 79, 90, 85, 81],
+            backgroundColor: 'rgba(255, 97, 43, 0.1)',
+            borderColor: '#FF612B',
+            borderWidth: 2,
+            pointBackgroundColor: '#fff',
+            pointBorderColor: '#FF612B',
+            pointHoverBackgroundColor: '#FF612B',
+            pointRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            r: {
+              angleLines: { color: '#E5E5EA' },
+              grid: { color: '#E5E5EA' },
+              pointLabels: { font: { size: 11, weight: '500' }, color: '#1D1D1F' },
+              ticks: { display: false, min: 0, max: 100 }
+            }
+          },
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    let cefrChartInstance = null;
+    let locationChartInstance = null;
+    function renderAnalyticsCharts() {
+      const ctx1 = document.getElementById('cefrChartCanvas');
+      const ctx2 = document.getElementById('locationChartCanvas');
+
+      if (ctx1) {
+        if (cefrChartInstance) cefrChartInstance.destroy();
+        cefrChartInstance = new Chart(ctx1, {
+          type: 'doughnut',
+          data: {
+            labels: ['Advanced (C1+)', 'Proficient (B2)', 'Intermediate (B1)'],
+            datasets: [{
+              data: [35, 50, 15],
+              backgroundColor: ['#1D1D1F', '#FF612B', '#E5E5EA'],
+              borderWidth: 0
+            }]
+          },
+          options: { cutout: '75%', plugins: { legend: { position: 'bottom' } } }
+        });
+      }
+
+      if (ctx2) {
+        if (locationChartInstance) locationChartInstance.destroy();
+        locationChartInstance = new Chart(ctx2, {
+          type: 'bar',
+          data: {
+            labels: ['Manila', 'Quezon City', 'Cebu', 'Davao'],
+            datasets: [{
+              data: [72, 65, 78, 60],
+              backgroundColor: '#FF612B',
+              borderRadius: 4
+            }]
+          },
+          options: { plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { border: { dash: [4, 4] }, grid: { color: '#E5E5EA' } } } }
+        });
+      }
+    }
+
+    // Init charts if starting on a tab that has them
+    window.addEventListener('DOMContentLoaded', () => {
+      // By default, dashboard is open, no charts there.
+    });
+  </script>
+</body>
+</html>
