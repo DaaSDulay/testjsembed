@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.U.R.A. Intelligence Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        aura: {
+                            primary: '#D74120', /* Dark Orange */
+                            navy: '#1A365D',
+                            slate: '#4A5568',
+                            text: '#2D3748',
+                            bg: '#F7FAFC',
+                            surface: '#FFFFFF',
+                            pass: '#10B981',
+                            review: '#F59E0B',
+                            fail: '#EF4444'
+                        }
+                    },
+                    boxShadow: {
+                        'apple': '0 4px 24px -6px rgba(0, 0, 0, 0.05), 0 0 1px rgba(0,0,0,0.1)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body class="bg-aura-bg text-aura-text min-h-screen font-sans selection:bg-aura-primary selection:text-white">
+
+    <header class="bg-white/80 backdrop-blur-xl border-b border-gray-200 sticky top-0 z-50 h-16">
+        <div class="max-w-[120rem] mx-auto px-6 h-full flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-aura-primary flex items-center justify-center">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <span class="font-bold text-xl tracking-tight text-aura-navy">A.U.R.A.</span>
+            </div>
+            
+            <nav class="flex gap-2 bg-gray-100/50 p-1 rounded-full">
+                <button onclick="switchTab('dashboard')" id="btn-tab-dashboard" class="px-6 py-1.5 rounded-full text-sm font-semibold transition-all bg-white shadow-sm text-aura-navy">Dashboard</button>
+                <button onclick="switchTab('profile')" id="btn-tab-profile" class="px-6 py-1.5 rounded-full text-sm font-medium transition-all text-gray-500 hover:text-aura-text">Intelligence Profile</button>
+                <button onclick="switchTab('simulator')" id="btn-tab-simulator" class="px-6 py-1.5 rounded-full text-sm font-medium transition-all text-gray-500 hover:text-aura-text">Assessment Simulator</button>
+            </nav>
+
+            <div class="flex items-center gap-4">
+                <button class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                </button>
+                <div class="w-8 h-8 rounded-full bg-aura-navy text-white flex items-center justify-center text-xs font-bold">TA</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-[120rem] mx-auto p-4 sm:p-6 h-[calc(100vh-4rem)] overflow-y-auto">
+        
+        <section id="tab-dashboard" class="tab-content active space-y-4">
+            
+            <!-- Top Row: Schedule & Calendar (Above the fold focus) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                
+                <!-- Left: Upcoming Schedule (Expanded) -->
+                <div class="lg:col-span-9 bg-white p-5 rounded-3xl shadow-apple border border-gray-100">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="font-bold text-lg text-aura-navy">Upcoming Schedule</h2>
+                        <button class="text-sm font-medium text-aura-primary hover:underline px-3 py-1 rounded-full">View All</button>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-x-6 gap-y-4">
+                        <div class="space-y-3">
+                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Today</h3>
+                            <!-- Schedule Item 1 -->
+                            <div class="flex items-center gap-3 p-3 rounded-2xl border border-gray-100 hover:border-aura-primary transition-colors cursor-pointer group">
+                                <div class="w-14 text-center">
+                                    <p class="text-sm font-bold text-aura-primary">09:00</p>
+                                    <p class="text-[10px] text-gray-400 font-medium">AM</p>
+                                </div>
+                                <div class="w-px h-8 bg-gray-100 group-hover:bg-aura-primary/20"></div>
+                                <div class="flex-1">
+                                    <p class="font-semibold text-sm text-aura-text">Maria Santos</p>
+                                    <p class="text-xs text-aura-slate">Voice Assessment (Phase 1)</p>
+                                </div>
+                                <span class="px-2 py-1 bg-blue-50 text-blue-600 text-[10px] font-bold rounded-full">Waiting</span>
+                            </div>
+                            <!-- Schedule Item 2 -->
+                            <div class="flex items-center gap-3 p-3 rounded-2xl border border-gray-100 hover:border-aura-primary transition-colors cursor-pointer group">
+                                <div class="w-14 text-center">
+                                    <p class="text-sm font-bold text-gray-500 group-hover:text-aura-primary">10:30</p>
+                                    <p class="text-[10px] text-gray-400 font-medium">AM</p>
+                                </div>
+                                <div class="w-px h-8 bg-gray-100 group-hover:bg-aura-primary/20"></div>
+                                <div class="flex-1">
+                                    <p class="font-semibold text-sm text-aura-text">Arjun Patel</p>
+                                    <p class="text-xs text-aura-slate">Role-Based (Phase 3)</p>
+                                </div>
+                                <span class="px-2 py-1 bg-green-50 text-green-600 text-[10px] font-bold rounded-full">Confirmed</span>
+                            </div>
+                            <!-- Schedule Item 3 -->
+                            <div class="flex items-center gap-3 p-3 rounded-2xl border border-gray-100 hover:border-aura-primary transition-colors cursor-pointer group">
+                                <div class="w-14 text-center">
+                                    <p class="text-sm font-bold text-gray-500 group-hover:text-aura-primary">01:00</p>
+                                    <p class="text-[10px] text-gray-400 font-medium">PM</p>
+                                </div>
+                                <div class="w-px h-8 bg-gray-100 group-hover:bg-aura-primary/20"></div>
+                                <div class="flex-1">
+                                    <p class="font-semibold text-sm text-aura-text">Elena Gomez</p>
+                                    <p class="text-xs text-aura-slate">Written Assess (Phase 2)</p>
+                                </div>
+                                <span class="px-2 py-1 bg-yellow-50 text-yellow-600 text-[10px] font-bold rounded-full">Pending</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Tomorrow</h3>
+                            <!-- Schedule Item 4 -->
+                            <div class="flex items-center gap-3 p-3 rounded-2xl border border-gray-100 hover:border-aura-primary transition-colors cursor-pointer opacity-80 group">
+                                <div class="w-14 text-center">
+                                    <p class="text-sm font-bold text-gray-500 group-hover:text-aura-primary">09:30</p>
+                                    <p class="text-[10px] text-gray-400 font-medium">AM</p>
+                                </div>
+                                <div class="w-px h-8 bg-gray-100"></div>
+                                <div class="flex-1">
+                                    <p class="font-semibold text-sm text-aura-text">John Doe</p>
+                                    <p class="text-xs text-aura-slate">Final Review</p>
+                                </div>
+                            </div>
+                             <!-- Schedule Item 5 -->
+                             <div class="flex items-center gap-3 p-3 rounded-2xl border border-gray-100 hover:border-aura-primary transition-colors cursor-pointer opacity-80 group">
+                                <div class="w-14 text-center">
+                                    <p class="text-sm font-bold text-gray-500 group-hover:text-aura-primary">11:00</p>
+                                    <p class="text-[10px] text-gray-400 font-medium">AM</p>
+                                </div>
+                                <div class="w-px h-8 bg-gray-100"></div>
+                                <div class="flex-1">
+                                    <p class="font-semibold text-sm text-aura-text">Sarah Jenkins</p>
+                                    <p class="text-xs text-aura-slate">Voice Assessment</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Calendar Widget (Compact) -->
+                <div class="lg:col-span-3 bg-white p-5 rounded-3xl shadow-apple border border-gray-100 flex flex-col">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="font-bold text-sm text-aura-navy">July 2026</h2>
+                        <div class="flex gap-1">
+                            <button class="p-1 rounded-full hover:bg-gray-100"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                            <button class="p-1 rounded-full hover:bg-gray-100"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-semibold text-gray-400 mb-2">
+                        <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1 text-center text-xs font-medium text-aura-text flex-1">
+                        <!-- Mock Calendar Days -->
+                        <div class="p-1 text-gray-300">26</div><div class="p-1 text-gray-300">27</div><div class="p-1">28</div><div class="p-1">29</div><div class="p-1">30</div><div class="p-1">1</div><div class="p-1">2</div>
+                        <div class="p-1">3</div><div class="p-1 bg-orange-50 text-aura-primary font-bold rounded-full">4</div><div class="p-1">5</div><div class="p-1">6</div><div class="p-1">7</div><div class="p-1">8</div><div class="p-1">9</div>
+                        <div class="p-1 relative">10<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-aura-primary rounded-full"></span></div><div class="p-1">11</div><div class="p-1 relative">12<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-aura-primary rounded-full"></span></div><div class="p-1">13</div><div class="p-1">14</div><div class="p-1">15</div><div class="p-1">16</div>
+                        <div class="p-1">17</div><div class="p-1">18</div><div class="p-1">19</div><div class="p-1">20</div><div class="p-1">21</div><div class="p-1 bg-aura-primary text-white font-bold rounded-full shadow-sm">22</div><div class="p-1">23</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI Cards Row (Reduced Sizes) -->
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div class="bg-white p-4 rounded-3xl shadow-apple border border-gray-100 flex flex-col justify-center">
+                    <p class="text-xs font-medium text-gray-500 mb-1">Total Pool</p>
+                    <p class="text-2xl font-bold text-aura-navy">1,248</p>
+                    <p class="text-[10px] text-green-500 font-medium mt-1">↑ 12% vs last week</p>
+                </div>
+                <div class="bg-white p-4 rounded-3xl shadow-apple border border-gray-100 flex flex-col justify-center">
+                    <p class="text-xs font-medium text-gray-500 mb-1">Avg Score (CEFR)</p>
+                    <p class="text-2xl font-bold text-aura-navy">2.4 <span class="text-sm font-medium text-gray-400">/ 4.0</span></p>
+                    <p class="text-[10px] text-gray-400 font-medium mt-1">Benchmark: 2.2 (B1)</p>
+                </div>
+                <div class="bg-white p-4 rounded-3xl shadow-apple border border-gray-100 flex flex-col justify-center">
+                    <p class="text-xs font-medium text-gray-500 mb-1">Completed</p>
+                    <p class="text-2xl font-bold text-aura-navy">892</p>
+                    <div class="w-full bg-gray-100 h-1.5 rounded-full mt-2">
+                        <div class="bg-aura-primary h-1.5 rounded-full" style="width: 71%"></div>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-3xl shadow-apple border border-gray-100 flex flex-col justify-center">
+                    <p class="text-xs font-medium text-gray-500 mb-1">Recommended</p>
+                    <p class="text-2xl font-bold text-aura-pass">345</p>
+                    <p class="text-[10px] text-gray-400 font-medium mt-1">Ready for interview</p>
+                </div>
+                <div class="bg-white p-4 rounded-3xl shadow-apple border border-gray-100 flex flex-col justify-center">
+                    <p class="text-xs font-medium text-gray-500 mb-1">Pipeline Conversion</p>
+                    <p class="text-2xl font-bold text-aura-navy">27.6%</p>
+                    <p class="text-[10px] text-green-500 font-medium mt-1">↑ 2.1% improvement</p>
+                </div>
+            </div>
+
+            <!-- Smart Table Placeholder -->
+            <div class="bg-white rounded-3xl shadow-apple border border-gray-100 overflow-hidden">
+                 <div class="px-5 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                    <h3 class="font-semibold text-aura-navy text-sm">Prioritized Candidates</h3>
+                    <button class="px-4 py-1.5 bg-white border border-gray-200 text-xs font-semibold rounded-full hover:bg-gray-50 transition">Filter</button>
+                 </div>
+                 <div class="p-5 overflow-x-auto">
+                    <table class="w-full text-left text-sm whitespace-nowrap">
+                        <thead class="text-xs text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                            <tr>
+                                <th class="pb-3 font-semibold">Candidate Name</th>
+                                <th class="pb-3 font-semibold">Farthest Stage</th>
+                                <th class="pb-3 font-semibold">CEFR Score</th>
+                                <th class="pb-3 font-semibold">AI Signal</th>
+                                <th class="pb-3 font-semibold text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-aura-text divide-y divide-gray-50">
+                            <tr class="hover:bg-gray-50/50 transition-colors">
+                                <td class="py-3 font-medium">David Chen</td>
+                                <td class="py-3"><span class="px-2.5 py-1 bg-purple-50 text-purple-700 text-xs font-semibold rounded-full">Phase 4 (Final)</span></td>
+                                <td class="py-3 font-bold text-aura-navy">2.8 <span class="text-gray-400 font-normal text-xs">(B2)</span></td>
+                                <td class="py-3"><span class="flex items-center gap-1 text-aura-pass text-xs font-semibold"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg> Strong Hire</span></td>
+                                <td class="py-3 text-right"><button onclick="switchTab('profile')" class="px-4 py-1.5 bg-aura-primary text-white text-xs font-semibold rounded-full hover:bg-aura-primary/90 transition">Review</button></td>
+                            </tr>
+                            <tr class="hover:bg-gray-50/50 transition-colors">
+                                <td class="py-3 font-medium">Sarah Jenkins</td>
+                                <td class="py-3"><span class="px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-full">Phase 3 (Role)</span></td>
+                                <td class="py-3 font-bold text-aura-navy">2.6 <span class="text-gray-400 font-normal text-xs">(B2)</span></td>
+                                <td class="py-3"><span class="flex items-center gap-1 text-aura-pass text-xs font-semibold"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg> Hire</span></td>
+                                <td class="py-3 text-right"><button class="px-4 py-1.5 bg-gray-100 text-aura-text text-xs font-semibold rounded-full hover:bg-gray-200 transition">Review</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                 </div>
+            </div>
+        </section>
+
+        <section id="tab-profile" class="tab-content h-full">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full pb-10">
+                
+                <!-- Left Column: Timeline, Actions, & Templates -->
+                <div class="lg:col-span-1 space-y-4">
+                    <!-- Candidate Header -->
+                    <div class="bg-white p-5 rounded-3xl shadow-apple border border-gray-100 flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-full bg-aura-navy text-white flex items-center justify-center text-xl font-bold">DC</div>
+                        <div>
+                            <h2 class="font-bold text-lg text-aura-navy">David Chen</h2>
+                            <p class="text-xs text-aura-slate">ID: BLST-8492 | Tech Support</p>
+                        </div>
+                    </div>
+
+                    <!-- Test Template Configuration -->
+                    <div class="bg-white p-5 rounded-3xl shadow-apple border border-gray-100">
+                        <h3 class="font-semibold text-sm mb-3 text-aura-navy">Assessment Setup</h3>
+                        <div class="space-y-2 mb-4">
+                            <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                <input type="checkbox" checked class="rounded text-aura-primary focus:ring-aura-primary accent-aura-primary w-4 h-4">
+                                <span>Phase 1: Voice & Language (35m)</span>
+                            </label>
+                            <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                <input type="checkbox" checked class="rounded text-aura-primary focus:ring-aura-primary accent-aura-primary w-4 h-4">
+                                <span>Phase 2: Written Comm (36m)</span>
+                            </label>
+                            <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                <input type="checkbox" class="rounded text-aura-primary focus:ring-aura-primary accent-aura-primary w-4 h-4">
+                                <span class="text-gray-500">Phase 3: Role-Based (Optional)</span>
+                            </label>
+                        </div>
+                        <select class="w-full text-sm p-2 rounded-xl border border-gray-200 bg-gray-50 mb-3 focus:outline-none focus:border-aura-primary">
+                            <option>Template: Standard Tech Support</option>
+                            <option>Template: Advanced Bilingual</option>
+                        </select>
+                        <button class="w-full py-2 bg-aura-navy text-white text-sm font-semibold rounded-full hover:bg-aura-navy/90 transition flex justify-center items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            Send Exam Link
+                        </button>
+                    </div>
+
+                    <!-- Status Timeline & Action Buttons -->
+                    <div class="bg-white p-5 rounded-3xl shadow-apple border border-gray-100">
+                        <h3 class="font-semibold text-sm mb-4 text-aura-navy">Candidate Progress</h3>
+                        
+                        <div class="relative border-l border-gray-200 ml-3 space-y-6 pb-4">
+                            <!-- Step 1 -->
+                            <div class="relative pl-6">
+                                <div class="absolute -left-1.5 top-1.5 w-3 h-3 bg-aura-pass rounded-full ring-4 ring-white"></div>
+                                <p class="text-sm font-bold text-aura-text">Profile Created</p>
+                                <p class="text-xs text-gray-400">July 20, 2026 - via ATS</p>
+                            </div>
+                            <!-- Step 2 -->
+                            <div class="relative pl-6">
+                                <div class="absolute -left-1.5 top-1.5 w-3 h-3 bg-aura-pass rounded-full ring-4 ring-white"></div>
+                                <p class="text-sm font-bold text-aura-text">Assessment Dispatched</p>
+                                <p class="text-xs text-gray-400">July 21, 2026</p>
+                            </div>
+                            <!-- Step 3 -->
+                            <div class="relative pl-6">
+                                <div class="absolute -left-1.5 top-1.5 w-3 h-3 bg-aura-primary rounded-full ring-4 ring-white animate-pulse"></div>
+                                <p class="text-sm font-bold text-aura-primary">AI Evaluation Complete</p>
+                                <p class="text-xs text-gray-500 mb-3">Awaiting Recruiter Decision</p>
+                                
+                                <!-- Decision Action Buttons -->
+                                <div class="flex flex-wrap gap-2">
+                                    <button class="px-3 py-1.5 bg-aura-primary text-white text-[10px] font-bold uppercase tracking-wide rounded-full hover:bg-aura-primary/90 transition">Advance</button>
+                                    <button class="px-3 py-1.5 bg-gray-100 text-aura-slate text-[10px] font-bold uppercase tracking-wide rounded-full hover:bg-gray-200 transition">Hold</button>
+                                    <button class="px-3 py-1.5 bg-gray-100 text-aura-slate text-[10px] font-bold uppercase tracking-wide rounded-full hover:bg-gray-200 transition">Reschedule</button>
+                                    <button class="px-3 py-1.5 bg-red-50 text-red-600 text-[10px] font-bold uppercase tracking-wide rounded-full hover:bg-red-100 transition">Reject</button>
+                                </div>
+                                <button class="mt-2 text-xs font-medium text-aura-primary hover:underline flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg> Add Note</button>
+                            </div>
+                            <!-- Step 4 -->
+                            <div class="relative pl-6 opacity-40">
+                                <div class="absolute -left-1.5 top-1.5 w-3 h-3 bg-gray-200 rounded-full ring-4 ring-white"></div>
+                                <p class="text-sm font-bold text-gray-500">Live Interview</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Results & Analytics -->
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="bg-white p-6 rounded-3xl shadow-apple border border-gray-100">
+                        <div class="flex justify-between items-start mb-6">
+                            <div>
+                                <h2 class="text-xl font-bold text-aura-navy">Overall Readiness Score</h2>
+                                <p class="text-sm text-aura-slate mt-1">Based on Phase 1 & 2 Multimodal AI Analysis</p>
+                            </div>
+                            <div class="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center border-4 border-aura-pass">
+                                <span class="font-bold text-xl text-aura-pass">2.8</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
+                            <div class="p-3 bg-gray-50 rounded-2xl border border-gray-100 text-center">
+                                <p class="text-[10px] uppercase font-bold text-gray-400 mb-1">Phonological</p>
+                                <p class="text-lg font-bold text-aura-navy">3.0</p>
+                            </div>
+                            <div class="p-3 bg-gray-50 rounded-2xl border border-gray-100 text-center">
+                                <p class="text-[10px] uppercase font-bold text-gray-400 mb-1">Lexical</p>
+                                <p class="text-lg font-bold text-aura-navy">2.8</p>
+                            </div>
+                            <div class="p-3 bg-gray-50 rounded-2xl border border-gray-100 text-center">
+                                <p class="text-[10px] uppercase font-bold text-gray-400 mb-1">Grammar</p>
+                                <p class="text-lg font-bold text-aura-navy">2.5</p>
+                            </div>
+                            <div class="p-3 bg-gray-50 rounded-2xl border border-gray-100 text-center">
+                                <p class="text-[10px] uppercase font-bold text-gray-400 mb-1">IDM</p>
+                                <p class="text-lg font-bold text-aura-navy">3.0</p>
+                            </div>
+                            <div class="p-3 bg-gray-50 rounded-2xl border border-gray-100 text-center">
+                                <p class="text-[10px] uppercase font-bold text-gray-400 mb-1">Coherence</p>
+                                <p class="text-lg font-bold text-aura-navy">2.7</p>
+                            </div>
+                        </div>
+
+                        <h3 class="font-bold text-sm text-aura-navy mb-3">AI Diagnostic Summary</h3>
+                        <div class="p-4 bg-blue-50/50 rounded-2xl border border-blue-100 text-sm text-aura-text leading-relaxed">
+                            <p>Candidate demonstrates <strong>upper-intermediate fluency (B2)</strong>. Exhibits strong phonological control and adapts well to interlocutor pace. Lexical resource is sufficient for complex workplace scenarios, successfully utilizing idioms. <span class="text-amber-600 font-medium">Minor systematic grammatical slips occur in highly complex sentences (SVA errors noted in section 5)</span>, but coherence is maintained via strong sequence markers.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-simulator" class="tab-content h-full">
+            <div class="max-w-4xl mx-auto h-full flex flex-col pb-10">
+                
+                <!-- Screen 1: Applicant Information & Choose Assessment -->
+                <div id="sim-login" class="sim-screen bg-white p-8 rounded-3xl shadow-apple border border-gray-100 flex-1 flex flex-col justify-center max-w-2xl mx-auto w-full">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl font-bold text-aura-navy mb-2">Candidate Portal</h2>
+                        <p class="text-sm text-gray-500">Please enter your information to begin the assessment.</p>
+                    </div>
+                    
+                    <div class="space-y-4 mb-8">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Candidate Name</label>
+                            <input type="text" id="cand-name" placeholder="e.g. Maria Santos" class="w-full p-3 rounded-2xl border border-gray-200 focus:border-aura-primary focus:ring-1 focus:ring-aura-primary outline-none transition text-sm text-aura-navy bg-gray-50">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">BLAST ID</label>
+                                <input type="text" id="cand-id" placeholder="BLST-XXXX" class="w-full p-3 rounded-2xl border border-gray-200 focus:border-aura-primary focus:ring-1 focus:ring-aura-primary outline-none transition text-sm text-aura-navy bg-gray-50">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Location</label>
+                                <input type="text" id="cand-loc" placeholder="City, Country" class="w-full p-3 rounded-2xl border border-gray-200 focus:border-aura-primary focus:ring-1 focus:ring-aura-primary outline-none transition text-sm text-aura-navy bg-gray-50">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Candidate Type</label>
+                            <select id="cand-type" class="w-full p-3 rounded-2xl border border-gray-200 focus:border-aura-primary focus:ring-1 focus:ring-aura-primary outline-none transition text-sm text-aura-navy bg-gray-50 appearance-none">
+                                <option value="external">External Applicant</option>
+                                <option value="internal">Internal Transfer</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-gray-100 pt-6">
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-3">Choose Assessment Module</label>
+                        <div class="grid grid-cols-3 gap-3 mb-6">
+                            <label class="cursor-pointer">
+                                <input type="radio" name="assessment_type" value="voice" class="peer sr-only" checked>
+                                <div class="p-3 text-center border-2 border-gray-100 rounded-2xl peer-checked:border-aura-primary peer-checked:bg-aura-primary/5 transition">
+                                    <p class="text-sm font-bold text-aura-navy">Voice</p>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="assessment_type" value="written" class="peer sr-only">
+                                <div class="p-3 text-center border-2 border-gray-100 rounded-2xl peer-checked:border-aura-primary peer-checked:bg-aura-primary/5 transition">
+                                    <p class="text-sm font-bold text-aura-navy">Written</p>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="assessment_type" value="role" class="peer sr-only">
+                                <div class="p-3 text-center border-2 border-gray-100 rounded-2xl peer-checked:border-aura-primary peer-checked:bg-aura-primary/5 transition">
+                                    <p class="text-sm font-bold text-aura-navy">Role-Based</p>
+                                </div>
+                            </label>
+                        </div>
+                        <button onclick="submitApplicantInfo()" class="w-full py-3 bg-aura-primary text-white font-bold rounded-full hover:bg-aura-primary/90 transition shadow-lg shadow-aura-primary/20">Login & Authenticate</button>
+                    </div>
+                </div>
+
+                <!-- Screen 2: System Check -->
+                <div id="sim-setup" class="sim-screen hidden bg-white p-8 rounded-3xl shadow-apple border border-gray-100 text-center flex-1 flex-col items-center justify-center">
+                    <div class="w-16 h-16 bg-aura-primary/10 text-aura-primary rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <h2 class="text-2xl font-bold text-aura-navy mb-2">System & Environment Check</h2>
+                    <p class="text-gray-500 mb-8 max-w-md mx-auto">Before we begin, we need to verify your hardware and environment to ensure a fair assessment.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-lg mb-8 text-left">
+                        <div class="p-4 border border-gray-200 rounded-2xl flex items-center gap-3 bg-gray-50">
+                            <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                            <div>
+                                <p class="font-bold text-sm">Microphone</p>
+                                <p class="text-xs text-gray-500">Levels look good</p>
+                            </div>
+                        </div>
+                        <div class="p-4 border border-gray-200 rounded-2xl flex items-center gap-3 bg-gray-50">
+                            <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                            <div>
+                                <p class="font-bold text-sm">Webcam</p>
+                                <p class="text-xs text-gray-500">Feed established</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-sm text-left max-w-lg w-full mb-8 bg-blue-50 p-4 rounded-2xl text-blue-800">
+                        <p class="font-bold mb-2 flex items-center gap-2"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg> Best Practices:</p>
+                        <ul class="list-disc pl-5 space-y-1 text-xs">
+                            <li>Ensure a clean, well-lit background.</li>
+                            <li>Stay in an isolated room to reduce environmental noise.</li>
+                            <li>You must remain in frame for the duration of the test.</li>
+                        </ul>
+                    </div>
+
+                    <button onclick="routeAssessment()" class="px-8 py-3 bg-aura-primary text-white font-bold rounded-full hover:bg-aura-primary/90 transition shadow-lg shadow-aura-primary/20">Begin Assessment</button>
+                </div>
+
+                <!-- Screen 3: Voice Assessment - Reading Activity -->
+                <div id="sim-voice-reading" class="sim-screen hidden bg-white p-6 rounded-3xl shadow-apple border border-gray-100 flex-1 flex-col">
+                    <div class="flex justify-between items-start mb-8 border-b border-gray-100 pb-4">
+                        <div>
+                            <div class="text-[10px] font-bold text-aura-primary uppercase tracking-wide mb-1">Voice Assessment • Part 1</div>
+                            <h2 class="text-xl font-bold text-aura-navy">Reading Activity</h2>
+                            <p class="text-sm text-gray-500">Read the following passage aloud clearly and naturally.</p>
+                        </div>
+                        <div class="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-200">
+                            <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+                            <span class="text-xs font-bold text-gray-600">Recording</span>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 flex flex-col justify-center max-w-2xl mx-auto w-full">
+                        <div class="text-lg text-aura-navy leading-relaxed text-center mb-10 bg-gray-50 p-8 rounded-3xl border border-gray-100 font-medium">
+                            "Thank you for calling technical support. My name is Alex, and I will be assisting you today. I understand you are experiencing connectivity issues with your enterprise router. Before we begin troubleshooting, I need to verify a few details to access your account securely. Could you please provide your alphanumeric service PIN and the MAC address located on the bottom of your device?"
+                        </div>
+                        
+                        <div class="flex justify-center items-center gap-4">
+                            <div class="w-16 h-4 bg-gray-200 rounded-full overflow-hidden flex items-center justify-center gap-1 opacity-50">
+                                <div class="w-1 h-2 bg-aura-primary rounded-full animate-bounce"></div>
+                                <div class="w-1 h-3 bg-aura-primary rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                                <div class="w-1 h-4 bg-aura-primary rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                                <div class="w-1 h-2 bg-aura-primary rounded-full animate-bounce" style="animation-delay: 0.3s"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 pt-6 border-t border-gray-100 flex justify-between items-center">
+                        <span class="text-xs font-bold text-gray-400">Step 1 of 2</span>
+                        <button onclick="showScreen('sim-voice-speaking')" class="px-6 py-2 bg-aura-navy text-white text-sm font-bold rounded-full hover:bg-aura-navy/90 transition shadow-sm">Submit & Continue</button>
+                    </div>
+                </div>
+
+                <!-- Screen 4: Voice Assessment - Listening & Speaking Activity -->
+                <div id="sim-voice-speaking" class="sim-screen hidden bg-white p-6 rounded-3xl shadow-apple border border-gray-100 flex-1 flex-col">
+                    <div class="flex justify-between items-start mb-8 border-b border-gray-100 pb-4">
+                        <div>
+                            <div class="text-[10px] font-bold text-aura-primary uppercase tracking-wide mb-1">Voice Assessment • Part 2</div>
+                            <h2 class="text-xl font-bold text-aura-navy">Listening & Speaking Activity</h2>
+                            <p class="text-sm text-gray-500">Listen to the customer prompt and record your response.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 flex flex-col justify-center max-w-2xl mx-auto w-full gap-8">
+                        
+                        <!-- Audio Player Mockup -->
+                        <div class="bg-blue-50 p-6 rounded-3xl border border-blue-100 flex items-center gap-4">
+                            <button class="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition flex-shrink-0">
+                                <svg class="w-5 h-5 ml-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                            </button>
+                            <div class="flex-1">
+                                <p class="text-sm font-bold text-blue-900 mb-1">Customer Audio Prompt</p>
+                                <div class="w-full h-1.5 bg-blue-200 rounded-full overflow-hidden">
+                                    <div class="w-1/4 h-full bg-blue-600 rounded-full"></div>
+                                </div>
+                                <div class="flex justify-between text-[10px] text-blue-700 font-medium mt-1">
+                                    <span>0:04</span><span>0:15</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recording Area -->
+                        <div class="text-center bg-gray-50 p-8 rounded-3xl border border-gray-100">
+                            <p class="text-sm font-medium text-gray-500 mb-6">How would you respond to this customer's concern?</p>
+                            <button class="w-16 h-16 rounded-full bg-red-50 text-red-500 border-2 border-red-200 flex items-center justify-center mx-auto hover:bg-red-100 transition mb-3">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path></svg>
+                            </button>
+                            <p class="text-xs font-bold text-aura-navy">Click to Record Response</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 pt-6 border-t border-gray-100 flex justify-between items-center">
+                        <span class="text-xs font-bold text-gray-400">Step 2 of 2</span>
+                        <button onclick="showScreen('sim-complete')" class="px-6 py-2 bg-aura-navy text-white text-sm font-bold rounded-full hover:bg-aura-navy/90 transition shadow-sm">Submit Assessment</button>
+                    </div>
+                </div>
+
+                <!-- Screen 5: Written Assessment - Email Activity -->
+                <div id="sim-written-email" class="sim-screen hidden bg-white p-6 rounded-3xl shadow-apple border border-gray-100 flex-1 flex-col">
+                    <div class="flex justify-between items-start mb-6 border-b border-gray-100 pb-4">
+                        <div>
+                            <div class="text-[10px] font-bold text-aura-primary uppercase tracking-wide mb-1">Written Assessment • Part 1</div>
+                            <h2 class="text-xl font-bold text-aura-navy">Email Activity</h2>
+                            <p class="text-sm text-gray-500">Draft a professional response to the customer scenario below.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 flex gap-6">
+                        <!-- Scenario Panel -->
+                        <div class="w-1/3 bg-gray-50 rounded-2xl p-5 border border-gray-100 h-full">
+                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-3">Customer Context</h3>
+                            <p class="text-sm text-aura-navy mb-4"><strong>Client:</strong> John Doe (Premium Tier)</p>
+                            <p class="text-sm text-gray-600 leading-relaxed mb-4">
+                                John emailed complaining that he was charged twice for his monthly subscription. He is frustrated and threatening to cancel his service if not resolved immediately.
+                            </p>
+                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">Required Actions</h3>
+                            <ul class="list-disc pl-4 text-xs text-gray-600 space-y-1">
+                                <li>Apologize for the inconvenience.</li>
+                                <li>Confirm the duplicate charge will be refunded.</li>
+                                <li>Provide a timeline (3-5 business days).</li>
+                                <li>Maintain a polite, professional tone.</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Email Composer -->
+                        <div class="w-2/3 border border-gray-200 rounded-2xl flex flex-col overflow-hidden bg-white">
+                            <div class="p-3 border-b border-gray-100 bg-gray-50 flex items-center">
+                                <span class="text-xs font-bold text-gray-400 w-12">To:</span>
+                                <span class="text-sm text-aura-navy">johndoe@example.com</span>
+                            </div>
+                            <div class="p-3 border-b border-gray-100 bg-gray-50 flex items-center">
+                                <span class="text-xs font-bold text-gray-400 w-12">Subj:</span>
+                                <input type="text" placeholder="Add subject..." class="flex-1 bg-transparent text-sm text-aura-navy outline-none">
+                            </div>
+                            <textarea class="flex-1 p-4 w-full h-full outline-none text-sm text-aura-text resize-none" placeholder="Type your email response here..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-6 border-t border-gray-100 flex justify-between items-center">
+                        <span class="text-xs font-bold text-gray-400">Step 1 of 2</span>
+                        <button onclick="showScreen('sim-written-chat')" class="px-6 py-2 bg-aura-navy text-white text-sm font-bold rounded-full hover:bg-aura-navy/90 transition shadow-sm">Send & Continue</button>
+                    </div>
+                </div>
+
+                <!-- Screen 6: Written Assessment - Chat Activity -->
+                <div id="sim-written-chat" class="sim-screen hidden bg-white p-6 rounded-3xl shadow-apple border border-gray-100 flex-1 flex-col">
+                    <div class="flex justify-between items-start mb-6 border-b border-gray-100 pb-4">
+                        <div>
+                            <div class="text-[10px] font-bold text-aura-primary uppercase tracking-wide mb-1">Written Assessment • Part 2</div>
+                            <h2 class="text-xl font-bold text-aura-navy">Chat Activity</h2>
+                            <p class="text-sm text-gray-500">Handle the incoming live chat support request.</p>
+                        </div>
+                        <div class="px-3 py-1 bg-green-50 text-green-600 text-xs font-bold rounded-full border border-green-200">
+                            Status: Online
+                        </div>
+                    </div>
+
+                    <div class="flex-1 flex flex-col border border-gray-200 rounded-2xl overflow-hidden max-w-3xl mx-auto w-full bg-gray-50">
+                        <!-- Chat History -->
+                        <div class="flex-1 p-5 overflow-y-auto space-y-4">
+                            <div class="flex flex-col items-center mb-4">
+                                <span class="text-[10px] font-bold text-gray-400 uppercase">Chat Started • 10:42 AM</span>
+                            </div>
+                            
+                            <!-- Customer Message -->
+                            <div class="flex gap-3 max-w-[80%]">
+                                <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center text-xs font-bold flex-shrink-0">SJ</div>
+                                <div>
+                                    <span class="text-xs font-bold text-gray-500 mb-1 block">Sarah Jenkins (Customer)</span>
+                                    <div class="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm border border-gray-100 text-sm text-aura-navy">
+                                        Hi, I'm trying to update my billing address but the website keeps giving me an error code 404. Can you help?
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chat Input -->
+                        <div class="p-3 bg-white border-t border-gray-200 flex gap-2 items-center">
+                            <input type="text" placeholder="Type your response..." class="flex-1 p-3 rounded-full border border-gray-200 focus:border-aura-primary outline-none text-sm text-aura-text bg-gray-50">
+                            <button class="w-10 h-10 rounded-full bg-aura-primary text-white flex items-center justify-center hover:bg-aura-primary/90 transition shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-6 border-t border-gray-100 flex justify-between items-center">
+                        <span class="text-xs font-bold text-gray-400">Step 2 of 2</span>
+                        <button onclick="showScreen('sim-complete')" class="px-6 py-2 bg-aura-navy text-white text-sm font-bold rounded-full hover:bg-aura-navy/90 transition shadow-sm">End Chat & Submit</button>
+                    </div>
+                </div>
+
+                <!-- Screen 7: Complete -->
+                <div id="sim-complete" class="sim-screen hidden bg-white p-8 rounded-3xl shadow-apple border border-gray-100 text-center flex-1 flex-col items-center justify-center">
+                    <div class="w-20 h-20 bg-green-50 text-green-500 rounded-full flex items-center justify-center mb-6 mx-auto border-4 border-green-100">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                    <h2 class="text-2xl font-bold text-aura-navy mb-2">Assessment Submitted</h2>
+                    <p class="text-gray-500 mb-8 max-w-md mx-auto">Your responses have been securely uploaded to the A.U.R.A. Intelligence Engine for review. You may now close this window.</p>
+                    
+                    <button onclick="switchTab('dashboard')" class="px-8 py-3 bg-gray-100 text-aura-navy font-bold rounded-full hover:bg-gray-200 transition">Return to Dashboard</button>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Simple tab switching logic ensuring rounded-full button states update
+        function switchTab(tabId) {
+            // Hide all content
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            
+            // Reset all nav buttons
+            const navButtons = document.querySelectorAll('header nav button');
+            navButtons.forEach(btn => {
+                btn.className = 'px-6 py-1.5 rounded-full text-sm font-medium transition-all text-gray-500 hover:text-aura-text';
+            });
+
+            // Show selected content
+            document.getElementById('tab-' + tabId).classList.add('active');
+            
+            // Highlight active button
+            const activeBtn = document.getElementById('btn-tab-' + tabId);
+            activeBtn.className = 'px-6 py-1.5 rounded-full text-sm font-semibold transition-all bg-white shadow-sm text-aura-navy';
+            
+            // Reset simulator to login screen if leaving it
+            if(tabId !== 'simulator') {
+                showScreen('sim-login');
+            }
+        }
+
+        // --- Simulator Routing Logic ---
+        
+        let selectedAssessmentType = 'voice';
+
+        function showScreen(screenId) {
+            // Hide all sim screens
+            document.querySelectorAll('.sim-screen').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('flex');
+            });
+            
+            // Show target screen
+            const target = document.getElementById(screenId);
+            if(target) {
+                target.classList.remove('hidden');
+                target.classList.add('flex');
+            }
+        }
+
+        function submitApplicantInfo() {
+            // Capture chosen assessment type from radio buttons
+            const radios = document.getElementsByName('assessment_type');
+            for(let i = 0; i < radios.length; i++){
+                if(radios[i].checked) {
+                    selectedAssessmentType = radios[i].value;
+                    break;
+                }
+            }
+            // Proceed to system setup
+            showScreen('sim-setup');
+        }
+
+        function routeAssessment() {
+            // Route based on selected type from login screen
+            if (selectedAssessmentType === 'voice') {
+                showScreen('sim-voice-reading');
+            } else if (selectedAssessmentType === 'written') {
+                showScreen('sim-written-email');
+            } else {
+                // Fallback for role-based in this demo
+                alert("Role-Based assessment simulation is currently under construction. Routing to Written demo.");
+                showScreen('sim-written-email');
+            }
+        }
+    </script>
+</body>
+</html>
